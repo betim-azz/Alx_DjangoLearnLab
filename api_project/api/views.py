@@ -10,9 +10,7 @@ class BookList(generics.ListAPIView):
 
 # NEW: Task 2 ViewSet
 class BookViewSet(viewsets.ModelViewSet):
-    """
-    A viewset that provides default list(), create(), retrieve(),
-    update(), and destroy() actions for the Book model.
-    """
     queryset = Book.objects.all()
     serializer_class = BookSerializer
+    # Now 'permissions' will be recognized
+    permission_classes = [permissions.IsAuthenticated]
