@@ -1,6 +1,9 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, permissions # <--- You MUST add ', permissions' here
+from rest_framework import generics
 from .models import Book
 from .serializers import BookSerializer
+
+# ... rest of your code ...
 # Keep your BookList from Task 1 if you wish
 from rest_framework import generics
 
