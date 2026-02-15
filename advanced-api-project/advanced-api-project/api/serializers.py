@@ -11,20 +11,22 @@ class BookSerializer(serializers.ModelSerializer):
         model = Book
         fields = '__all__'
 
-    def validate_publication_year(self, value): # Ensure this matches the 'if' statement
-        current_year = datetime.now().year
-        if value > current_year:
-            raise serializers.ValidationError("Publication year cannot be in the future.")
+    def validate_publication_year(self, value):
+        """
+        Ensures the publication year is not set in the future.
+        """
+        if value > datetime.now().year:
+            raise serializers.ValidationError("The publication year cannot be in the future.")
         return value
 
 class AuthorSerializer(serializers.ModelSerializer):
     """
     Serializer for the Author model.
-    Includes a nested BookSerializer to handle the one-to-many relationship.
+    Includes a nested BookSerializer to show all books by this author.
     """
-    # The 'books' field matches the related_name in the Author/Book model relationship
+    # Nested serializer to handle the relationship defined in models.py
     books = BookSerializer(many=True, read_only=True)
 
     class Meta:
         model = Author
-        fields = ['name', 'books'] # The requirement only specifically asks for these
+        fields = ['name', 'books']
