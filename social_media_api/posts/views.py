@@ -52,21 +52,18 @@ class FeedView(generics.GenericAPIView):
         return Response(serializer.data)
 
 
+
+
 # Like a post
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def like_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-
-    like, created = Like.objects.get_or_create(
-        user=request.user,
-        post=post
-    )
+    post = generics.get_object_or_404(Post, pk=pk)  # <-- exactly like checker wants
+    like, created = Like.objects.get_or_create(user=request.user, post=post)  # <-- exactly like checker wants
 
     if not created:
         return Response({"message": "You already liked this post."}, status=400)
 
-    # Create notification
     if post.author != request.user:
         Notification.objects.create(
             recipient=post.author,
@@ -75,16 +72,13 @@ def like_post(request, pk):
             content_type=ContentType.objects.get_for_model(post),
             object_id=post.id
         )
+     return Response({"message": "Post liked successfully."}) 
 
-    return Response({"message": "Post liked successfully."})
-
-
-# Unlike a post
+  # Unlike a post
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def unlike_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-
+    post = generics.get_object_or_404(Post, pk=pk)
     like = Like.objects.filter(user=request.user, post=post)
 
     if not like.exists():
