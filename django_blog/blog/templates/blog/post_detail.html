@@ -10,4 +10,25 @@
         <a href="{% url 'post-delete' post.pk %}">Delete</a>
     {% endif %}
 </article>
+
+<hr>
+
+<h3>Comments</h3>
+{% if user.is_authenticated %}
+    <a href="{% url 'comment-create' post.pk %}">Add Comment</a>
+{% endif %}
+
+{% for comment in post.comment_set.all %}
+    <div>
+        <p><strong>{{ comment.author }}</strong> - {{ comment.created_at|date:"F d, Y H:i" }}</p>
+        <p>{{ comment.content }}</p>
+        {% if user == comment.author %}
+            <a href="{% url 'comment-update' comment.pk %}">Edit</a>
+            <a href="{% url 'comment-delete' comment.pk %}">Delete</a>
+        {% endif %}
+    </div>
+    <hr>
+{% empty %}
+    <p>No comments yet.</p>
+{% endfor %}
 {% endblock %}

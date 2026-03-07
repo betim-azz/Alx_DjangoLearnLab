@@ -7,7 +7,7 @@ from django.urls import reverse_lazy
 from django.db.models import Q
 
 from .models import Post
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, CommentForm
 
 
 # =========================
@@ -122,7 +122,7 @@ from django.urls import reverse
 
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
-    fields = ['content']
+    form_class = CommentForm
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -135,7 +135,7 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
-    fields = ['content']
+    form_class = CommentForm
 
     def test_func(self):
         comment = self.get_object()
