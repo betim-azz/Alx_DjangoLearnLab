@@ -1,0 +1,23 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<h2>Search Results</h2>
+<form method="get" action="{% url 'search' %}">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search posts...">
+    <button type="submit">Search</button>
+</form>
+
+{% if query %}
+    <p>Results for "{{ query }}":</p>
+    <div class="post-container">
+        {% for post in results %}
+            <article>
+                <h3><a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h3>
+                <p><small>By {{ post.author }} on {{ post.published_date|date:"F d, Y" }}</small></p>
+            </article>
+        {% empty %}
+            <p>No posts found.</p>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

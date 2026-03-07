@@ -6,8 +6,8 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy
 from django.db.models import Q
 
-from .models import Post
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, CommentForm
+from .models import Post, Comment, Tag
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, CommentForm, PostForm
 
 
 # =========================
@@ -72,7 +72,7 @@ class PostDetailView(DetailView):
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'content']
+    form_class = PostForm
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -81,7 +81,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'content']
+    form_class = PostForm
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -102,21 +102,35 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 
 # =========================
-# SEARCH FUNCTION
+# SEARCH AND TAG VIEWS
 # =========================
 
 def search(request):
     query = request.GET.get('q')
-
     results = Post.objects.none()
 
     if query:
         results = Post.objects.filter(
             Q(title__icontains=query) |
-            Q(content__icontains=query)
-        )
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
 
     return render(request, 'blog/search_results.html', {'results': results, 'query': query})
+
+class PostByTagListView(ListView):
+    model = Post
+    template_name = 'blog/posts_by_tag.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        tag_name = self.kwargs.get('tag_name')
+        return Post.objects.filter(tags__name=tag_name).order_by('-published_date')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tag_name'] = self.kwargs.get('tag_name')
+        return context
 from .models import Comment
 from django.urls import reverse
 

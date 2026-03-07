@@ -6,9 +6,8 @@ class Post(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     published_date = models.DateTimeField(auto_now_add=True)
-    # ForeignKey creates a many-to-one relationship (one author, many posts)
-    # on_delete=models.CASCADE ensures if a User is deleted, their posts are too
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
+    tags = models.ManyToManyField('Tag', related_name='posts', blank=True)
 
     def __str__(self):
         return self.title
@@ -30,7 +29,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 class Tag(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
-        return self.name    
+        return self.name
