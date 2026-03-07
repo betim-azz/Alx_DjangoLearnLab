@@ -1,8 +1,16 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-    <h2>All Blog Posts</h2>
-    <div class="post-container">
+<h2>All Blog Posts</h2>
+<a href="{% url 'post-create' %}">New Post</a>
+<div class="post-container">
+    {% for post in posts %}
+        <article>
+            <h3><a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h3>
+            <p><small>By {{ post.author }} on {{ post.published_date|date:"F d, Y" }}</small></p>
+        </article>
+    {% empty %}
         <p>No posts available yet.</p>
-    </div>
+    {% endfor %}
+</div>
 {% endblock %}
