@@ -4,9 +4,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-k_angc+$l&8x0rjj!k!#_x+^lyz_14wa@$^5!8*^8&z+-gew1x'
 
-DEBUG = True
+# Task 2: Security Settings - Set DEBUG to False in production
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -82,3 +83,18 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
+
+# Task 2: Security Settings - Browser-side protections
+SECURE_BROWSER_XSS_FILTER = True  # Enable XSS filter
+X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME-sniffing
+
+# Task 2 & 3: Secure cookies - Only send over HTTPS
+CSRF_COOKIE_SECURE = True  # CSRF cookie only over HTTPS
+SESSION_COOKIE_SECURE = True  # Session cookie only over HTTPS
+
+# Task 3: HTTPS and SSL/TLS Settings
+SECURE_SSL_REDIRECT = True  # Redirect all HTTP to HTTPS
+SECURE_HSTS_SECONDS = 31536000  # 1 year HSTS
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Include subdomains in HSTS
+SECURE_HSTS_PRELOAD = True  # Allow HSTS preloading
