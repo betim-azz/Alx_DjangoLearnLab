@@ -35,7 +35,7 @@ class PostForm(forms.ModelForm):
 
     class Meta:
         model = Post
-        fields = ['title', 'content', 'tags']
+        fields = ['title', 'content']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -46,10 +46,16 @@ class PostForm(forms.ModelForm):
         instance = super().save(commit=False)
         if commit:
             instance.save()
-        if self.cleaned_data.get('tags'):
-            tag_names = [name.strip() for name in self.cleaned_data['tags'].split(',') if name.strip()]
+            self.save_m2m()
+        
+        tag_input = self.cleaned_data.get('tags', '')
+        if tag_input:
+            tag_names = [name.strip() for name in tag_input.split(',') if name.strip()]
             instance.tags.clear()
             for tag_name in tag_names:
                 tag, created = Tag.objects.get_or_create(name=tag_name)
                 instance.tags.add(tag)
+        elif commit:
+            instance.tags.clear()
+        
         return instance
