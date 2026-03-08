@@ -1,0 +1,20 @@
+# Git Commands to Push Changes
+
+# Navigate to your project directory
+cd c:\Users\pc\Alx_DjangoLearnLab\social_media_api
+
+# Check status
+git status
+
+# Add all new and modified files
+git add .
+
+# Commit changes
+git commit -m "Add production deployment configuration and complete user authentication setup"
+
+# Push to GitHub
+git push origin main
+
+# If you haven't set up the remote yet:
+# git remote add origin https://github.com/yourusername/Alx_DjangoLearnLab.git
+# git push -u origin main
