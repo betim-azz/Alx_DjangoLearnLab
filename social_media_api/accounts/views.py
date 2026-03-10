@@ -35,7 +35,7 @@ class FollowUserView(generics.GenericAPIView):
     def post(self, request, user_id):
         user_to_follow = CustomUser.objects.get(id=user_id)
         if user_to_follow != request.user:
-            request.user.following.add(user_to_follow)
+            user_to_follow.followers.add(request.user)
             Notification.objects.create(
                 recipient=user_to_follow,
                 actor=request.user,
@@ -52,5 +52,5 @@ class UnfollowUserView(generics.GenericAPIView):
 
     def post(self, request, user_id):
         user_to_unfollow = CustomUser.objects.get(id=user_id)
-        request.user.following.remove(user_to_unfollow)
+        user_to_unfollow.followers.remove(request.user)
         return Response({"message": f"Unfollowed {user_to_unfollow.username}"}, status=status.HTTP_200_OK)
